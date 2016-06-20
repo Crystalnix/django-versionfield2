@@ -2,18 +2,23 @@ language: python
 
 sudo: false
 
+
 env:
-  - TOX_ENV=py27-django16
-  - TOX_ENV=py27-django17
   - TOX_ENV=py27-django18
-  - TOX_ENV=py33-django17
+  - TOX_ENV=py27-django19
+  - TOX_ENV=py27-django110a1
   - TOX_ENV=py33-django18
-  - TOX_ENV=py34-django17
+  - TOX_ENV=py33-django19
+  - TOX_ENV=py33-django110a1
   - TOX_ENV=py34-django18
-  - TOX_ENV=pypy-django17
+  - TOX_ENV=py34-django19
+  - TOX_ENV=py34-django110a1
   - TOX_ENV=pypy-django18
-  - TOX_ENV=pypy3-django17
+  - TOX_ENV=pypy-django19
+  - TOX_ENV=pypy-django110a1
   - TOX_ENV=pypy3-django18
+  - TOX_ENV=pypy3-django19
+  - TOX_ENV=pypy3-django110a1
 
 
 install:
