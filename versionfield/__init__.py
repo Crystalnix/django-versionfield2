@@ -3,14 +3,13 @@ from past.builtins import basestring
 from future.utils import python_2_unicode_compatible
 
 from django.db import models
-from django.utils.six import with_metaclass
 from .constants import DEFAULT_NUMBER_BITS
 from .version import Version
 from .utils import convert_version_string_to_int, convert_version_int_to_string
 from . import forms
 
 
-class VersionField(with_metaclass(models.SubfieldBase, models.BigIntegerField)):
+class VersionField(models.BigIntegerField):
     """
     A Field where version numbers are input/output as strings (e.g. 3.0.1)
     but stored in the db as converted integers for fast indexing
@@ -20,6 +19,18 @@ class VersionField(with_metaclass(models.SubfieldBase, models.BigIntegerField)):
     def __init__(self, number_bits=DEFAULT_NUMBER_BITS, *args, **kwargs):
         self.number_bits = number_bits
         super(VersionField, self).__init__(*args, **kwargs)
+
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return value
+
+        if isinstance(value, Version):
+            return int(value)
+
+        if isinstance(value, basestring):
+            return Version(value, self.number_bits)
+            
+        return Version(convert_version_int_to_string(value, self.number_bits), self.number_bits)
 
     def to_python(self, value):
         if isinstance(value, Version):
