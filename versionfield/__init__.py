@@ -16,17 +16,7 @@ if django.VERSION[:2] <= (1, 7):
 
 
     class BaseField(with_metaclass(models.SubfieldBase, models.BigIntegerField)):
-        def to_python(self, value):
-            if isinstance(value, Version):
-                return int(value)
-
-            if isinstance(value, basestring):
-                return Version(value, self.number_bits)
-
-            if value is None:
-                return None
-
-            return Version(convert_version_int_to_string(value, self.number_bits), self.number_bits)
+        pass
 else:
     class BaseField(models.BigIntegerField):
         def from_db_value(self, value, *args, **kwargs):
@@ -52,6 +42,18 @@ class VersionField(BaseField):
     def __init__(self, number_bits=DEFAULT_NUMBER_BITS, *args, **kwargs):
         self.number_bits = number_bits
         super(VersionField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if isinstance(value, Version):
+            return int(value)
+
+        if isinstance(value, basestring):
+            return Version(value, self.number_bits)
+
+        if value is None:
+            return None
+
+        return Version(convert_version_int_to_string(value, self.number_bits), self.number_bits)
 
     def get_prep_value(self, value):
         if isinstance(value, basestring):
